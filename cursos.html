@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CoderTecno - Cursos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{ --header-h:64px; --accent:#ff2e74; --sidebar-w:250px; }
+
+    *{ box-sizing:border-box; margin:0; padding:0; font-family:"Poppins",sans-serif; }
+
+    html,body{ height:100%; background:#0b0b0b; color:#fff; }
+
+    /* HEADER */
+    header{
+      height:var(--header-h);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 20px;
+      background:#0d0d0d;
+      border-bottom:1px solid #222;
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:1200;
+    }
+    .logo-left{ display:flex; align-items:center; gap:10px; }
+    .logo-left img{ width:40px; height:40px; border-radius:6px; }
+    .logo-left h1{ color:var(--accent); font-size:1.2rem; font-weight:700; }
+    nav.desktop{ display:flex; gap:18px; }
+    nav.desktop a{ color:#fff; text-decoration:none; font-weight:500; transition:color .2s; }
+    nav.desktop a:hover{ color:var(--accent); }
+
+    .menu-toggle{ display:none; background:none; border:none; color:#fff; font-size:1.6rem; cursor:pointer; }
+
+    /* LAYOUT PRINCIPAL (debajo del header) */
+    .main-container{
+      display:flex;
+      margin-top:var(--header-h);
+      min-height: calc(100vh - var(--header-h));
+      overflow:hidden;
+    }
+
+    /* SIDEBAR (desktop flow) */
+    .sidebar{
+      width:var(--sidebar-w);
+      background:#0d0d0d;
+      padding:20px;
+      flex:0 0 var(--sidebar-w);
+    }
+    .sidebar button{
+      width:100%;
+      text-align:left;
+      padding:12px 14px;
+      background:none;
+      border:none;
+      color:#fff;
+      font-size:1rem;
+      border-radius:8px;
+      margin-bottom:10px;
+      cursor:pointer;
+    }
+    .sidebar button:hover, .sidebar button.active{ background:var(--accent); color:#fff; }
+
+    /* CONTENIDO */
+    .content{
+      flex:1;
+      padding:28px 40px;
+      background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.85)), url("fondo.jpg") no-repeat center/cover;
+      overflow-y:auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .content h1{ text-align:center; color:var(--accent); margin-bottom:28px; font-size:1.95rem; }
+    .courses{
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
+      gap:24px;
+    }
+    .course-card{
+      background: rgba(20,20,20,0.9);
+      border-radius:12px;
+      padding:16px;
+      backdrop-filter: blur(6px);
+      transition: transform .22s, box-shadow .22s;
+    }
+    .course-card:hover{ transform: translateY(-6px); box-shadow: 0 12px 30px rgba(255,46,116,.18); }
+    .course-card img{ width:100%; height:160px; object-fit:cover; border-radius:8px; margin-bottom:12px; }
+    .course-title{ font-weight:600; font-size:1.05rem; margin-bottom:8px; color:#fff; }
+    .course-description{ color:#ccc; font-size:.95rem; margin-bottom:12px; }
+    .btn{ background:var(--accent); color:#fff; padding:10px 14px; border-radius:20px; text-decoration:none; font-weight:600; display:inline-block; }
+    .btn:hover{ background:#ff5893; }
+
+    /* OVERLAY (para móvil) */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,0.45);
+      opacity:0;
+      visibility:hidden;
+      transition:opacity .22s, visibility .22s;
+      z-index:1100;
+    }
+    .overlay.show{ opacity:1; visibility:visible; }
+
+    /* ======= RESPONSIVE: móvil/tablet ======= */
+    @media (max-width:900px){
+      .menu-toggle{ display:block; }
+      nav.desktop{ display:none; }
+
+      /* sidebar pasa a fixed y fuera de pantalla por defecto */
+      .sidebar{
+        position:fixed;
+        top:var(--header-h);
+        left: calc(-1 * (var(--sidebar-w) + 10px));
+        height: calc(100vh - var(--header-h));
+        z-index:1150;
+        box-shadow: 6px 0 30px rgba(0,0,0,.6);
+        transition:left .28s ease;
+      }
+      .sidebar.open{ left:0; }
+
+      /* contenido ocupa todo el ancho en móvil */
+      .content{
+        padding:18px;
+        min-height: calc(100vh - var(--header-h));
+      }
+
+      /* grid a 1 columna */
+      .courses{ grid-template-columns: 1fr; gap:18px; }
+    }
+
+    /* ajustes muy pequeños */
+    @media (max-width:420px){
+      .course-card img{ height:140px; }
+      .content h1{ font-size:1.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-left">
+      <img src="logo.jpg" alt="logo CoderTecno">
+      <h1>CoderTecno</h1>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:12px;">
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">☰</button>
+      <nav class="desktop">
+        <a href="index.html">Inicio</a>
+        <a href="contacto.html">Contacto</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- overlay para cerrar menu en móvil -->
+  <div class="overlay" id="overlay"></div>
+
+  <div class="main-container">
+    <aside class="sidebar" id="sidebar">
+      <button class="menu-btn active" data-category="web">Programación Web</button>
+      <button class="menu-btn" data-category="python">Python</button>
+      <button class="menu-btn" data-category="ia">Inteligencia Artificial</button>
+    </aside>
+
+    <main class="content" id="content">
+      <h1 id="section-title">Cursos de Programación Web</h1>
+      <div class="courses" id="courses-container"></div>
+    </main>
+  </div>
+
+  <script>
+    // Datos (tus cursos reales)
+    const courses = {
+      web: [
+        { img: "Curso Desarrollo Web Completo.jpg", title: "Desarrollo Web Completo", desc: "Dominá HTML5, CSS3, JavaScript, jQuery, AJAX, PHP y MySQL con proyectos.", link: "https://go.hotmart.com/Y102027892L" },
+        { img: "programacion.jpg", title: "Programación Básica + Avanzada", desc: "Fundamentos aplicados a proyectos reales y emprendimientos.", link: "https://go.hotmart.com/P102039163B" },
+        { img: "penlenty.jpg", title: "Lógica de Programación", desc: "Estructura y pensamiento lógico para desarrollo profesional.", link: "https://go.hotmart.com/M102060079C" }
+      ],
+      python: [
+        { img: "logopython.jpg", title: "Desarrollo Avanzado con Python", desc: "Patrones, SOLID y buenas prácticas en Python.", link: "https://go.hotmart.com/J102027942Y" }
+      ],
+      ia: [
+        { img: "Proyectonuevo.jpg", title: "Master IA Expert: Agencia de IA", desc: "Construí y escalá una agencia de automatización con IA.", link: "https://go.hotmart.com/F102319281P" },
+        { img: "ebookinteligenciaartificialebookGanadinero.jpg", title: "Ganá Dinero y Creatividad con IA", desc: "Estrategias para monetizar usando inteligencia artificial.", link: "https://go.hotmart.com/G102058105L" },
+        { img: "Conferencia.jpg", title: "IA Conferencia", desc: "Aprende a dominar las herramientas que están revolucionando todos los ámbitos." , link: "https://go.hotmart.com/B102322149I" }
+      ]
+    };
+
+    // Elementos
+    const container = document.getElementById('courses-container');
+    const titleEl = document.getElementById('section-title');
+    const buttons = document.querySelectorAll('.menu-btn');
+    const sidebar = document.getElementById('sidebar');
+    const menuToggle = document.getElementById('menuToggle');
+    const overlay = document.getElementById('overlay');
+
+    function renderCourses(category) {
+      const sectionNames = { web: "Programación Web", python: "Python", ia: "Inteligencia Artificial" };
+      const list = courses[category] || [];
+      titleEl.textContent = `Cursos de ${sectionNames[category] || category}`;
+      container.innerHTML = list.map(c => `
+        <article class="course-card">
+          <img src="${c.img}" alt="${c.title}">
+          <div class="course-title">${c.title}</div>
+          <div class="course-description">${c.desc}</div>
+          <a class="btn" href="${c.link}" target="_blank" rel="noopener">Ver Curso</a>
+        </article>
+      `).join('');
+    }
+
+    // Click en menu lateral
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const cat = btn.dataset.category;
+        renderCourses(cat);
+
+        // cerrar sidebar en móviles si está abierto
+        if (window.innerWidth <= 900) {
+          sidebar.classList.remove('open');
+          overlay.classList.remove('show');
+        }
+      });
+    });
+
+    // Toggle menu (móvil)
+    menuToggle.addEventListener('click', () => {
+      const open = sidebar.classList.toggle('open');
+      overlay.classList.toggle('show', open);
+    });
+
+    // Cerrar con overlay
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('show');
+    });
+
+    // Render inicial
+    renderCourses('web');
+
+    // Opcional: cerrar menú si redimensionan la pantalla a desktop
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 900) {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('show');
+      }
+    });
+  </script>
+</body>
+</html>
