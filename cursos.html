@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CoderTecno - Cursos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #0b0b0b;
+      color: #fff;
+    }
+
+    /* HEADER */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #0d0d0d;
+      padding: 15px 40px;
+      border-bottom: 1px solid #222;
+      z-index: 10;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-container img {
+      width: 40px;
+      height: 40px;
+      border-radius: 6px;
+    }
+
+    .logo-container h1 {
+      color: #ff2e74;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    nav {
+      display: flex;
+      gap: 25px;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #ff2e74;
+    }
+
+    /* CONTENEDOR PRINCIPAL */
+    .main-container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 250px;
+      background: #0d0d0d;
+      padding: 25px 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar button {
+      width: 100%;
+      text-align: left;
+      padding: 12px 15px;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: 0.3s;
+      margin-bottom: 10px;
+    }
+
+    .sidebar button:hover,
+    .sidebar button.active {
+      background-color: #ff2e74;
+    }
+
+    /* CONTENIDO PRINCIPAL */
+    .content {
+      flex: 1;
+      padding: 40px;
+      background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), url("fondo.jpg") no-repeat center center / cover;
+      overflow-y: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .content h1 {
+      text-align: center;
+      color: #ff2e74;
+      margin-bottom: 40px;
+      font-size: 2rem;
+    }
+
+    .courses {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 30px;
+    }
+
+    .course-card {
+      background: rgba(20, 20, 20, 0.9);
+      border-radius: 16px;
+      padding: 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      backdrop-filter: blur(6px);
+    }
+
+    .course-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(255, 46, 116, 0.3);
+    }
+
+    .course-card img {
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      height: 160px;
+      object-fit: cover;
+    }
+
+    .course-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .course-description {
+      color: #ccc;
+      font-size: 0.9rem;
+      margin-bottom: 15px;
+    }
+
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      background: #ff2e74;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 25px;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #ff5893;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-container">
+      <img src="logo.jpg" alt="Logo CoderTecno">
+      <h1>CoderTecno</h1>
+    </div>
+    <nav>
+      <a href="index.html">Inicio</a>
+      <a href="contacto.html">Contacto</a>
+    </nav>
+  </header>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <div class="main-container">
+    <aside class="sidebar">
+      <button class="menu-btn active" data-category="web">Programación Web</button>
+      <button class="menu-btn" data-category="python">Python</button>
+      <button class="menu-btn" data-category="ia">Inteligencia Artificial</button>
+    </aside>
+
+    <main class="content">
+      <h1 id="section-title">Cursos de Programación Web</h1>
+      <div class="courses" id="courses-container"></div>
+    </main>
+  </div>
+
+  <script>
+    const courses = {
+      web: [
+        {
+          img: "Curso Desarrollo Web Completo.jpg",
+          title: "Desarrollo Web Completo",
+          desc: "Dominá las tecnologías clave: HTML5, CSS3, JavaScript, jQuery, AJAX, PHP y MySQL, con proyectos prácticos.",
+          link: "https://go.hotmart.com/Y102027892L"
+        },
+        {
+          img: "programacion.jpg",
+          title: "Programación Básica + Avanzada",
+          desc: "Fundamentos sólidos de programación aplicables a proyectos reales y emprendimientos tecnológicos.",
+          link: "https://go.hotmart.com/P102039163B"
+        },
+        {
+          img: "penlenty.jpg",
+          title: "Lógica de Programación",
+          desc: "Comprendé la estructura y pensamiento lógico detrás del desarrollo de software profesional.",
+          link: "https://go.hotmart.com/M102060079C"
+        }
+      ],
+      python: [
+        {
+          img: "logopython.jpg",
+          title: "Desarrollo Avanzado con Python",
+          desc: "Llevá tus habilidades de Python al siguiente nivel con patrones de diseño y principios SOLID.",
+          link: "https://go.hotmart.com/J102027942Y"
+        }
+      ],
+      ia: [
+        {
+          img: "Proyectonuevo.jpg",
+          title: "Master IA Expert: Agencia de IA",
+          desc: "Aprendé a crear y escalar una agencia de automatización con inteligencia artificial, paso a paso.",
+          link: "https://go.hotmart.com/F102319281P"
+        },
+        {
+          img: "ebookinteligenciaartificialebookGanadinero.jpg",
+          title: "Ganá Dinero, Tiempo y Creatividad con IA",
+          desc: "Descubrí estrategias prácticas para monetizar tus conocimientos utilizando inteligencia artificial.",
+          link: "https://go.hotmart.com/G102058105L"
+        }
+      ]
+    };
+
+    const container = document.getElementById("courses-container");
+    const title = document.getElementById("section-title");
+    const buttons = document.querySelectorAll(".menu-btn");
+
+    function renderCourses(category) {
+      const selected = courses[category];
+      const sectionNames = {
+        web: "Programación Web",
+        python: "Python",
+        ia: "Inteligencia Artificial"
+      };
+      title.textContent = `Cursos de ${sectionNames[category]}`;
+      container.innerHTML = selected.map(course => `
+        <div class="course-card">
+          <img src="${course.img}" alt="${course.title}">
+          <div class="course-title">${course.title}</div>
+          <div class="course-description">${course.desc}</div>
+          <a href="${course.link}" class="btn" target="_blank">Ver Curso</a>
+        </div>
+      `).join("");
+    }
+
+    buttons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        buttons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderCourses(btn.dataset.category);
+      });
+    });
+
+    renderCourses("web");
+  </script>
+</body>
+</html>
